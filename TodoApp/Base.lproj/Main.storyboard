@@ -26,6 +26,9 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="25" id="273-Wn-CNJ"/>
                                 </constraints>
+                                <connections>
+                                    <action selector="addTodoItemBtnWasPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vEA-pc-pHK"/>
+                                </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="E20-af-uEx">
                                 <rect key="frame" x="20" y="146" width="374" height="32"/>
@@ -100,6 +103,8 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="prioritySegment" destination="E20-af-uEx" id="WUd-DG-4VK"/>
+                        <outlet property="todoItem" destination="ksq-Dq-Ejy" id="dEx-EG-Kps"/>
                         <outlet property="todoTable" destination="5A6-7J-YAu" id="jk4-FX-sar"/>
                     </connections>
                 </viewController>

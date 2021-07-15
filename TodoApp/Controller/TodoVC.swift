@@ -10,6 +10,9 @@ import UIKit
 class TodoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var todoTable : UITableView!
+    @IBOutlet weak var todoItem: UITextField!
+    @IBOutlet weak var prioritySegment: UISegmentedControl!
+    
     var todos : [Todo] = []
     
     override func viewDidLoad() {
@@ -19,14 +22,6 @@ class TodoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         todoTable.dataSource = self
         
         getTodo()
-        
-        NetworkService.shared.addTodos(todo: Todo(item: "Test", priority: 2)) { (todos) in
-            self.todos = todos.items
-            self.todoTable.reloadData()
-        } _: { (errMsg) in
-            debugPrint(errMsg)
-        }
-
     }
     
     func getTodo()
@@ -55,6 +50,19 @@ class TodoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         1
+    }
+    
+    @IBAction func addTodoItemBtnWasPressed(_ sender: Any) {
+        guard let todoDescription = todoItem.text else {return}
+        let newTodo = Todo(item: todoDescription, priority: prioritySegment.selectedSegmentIndex)
+        
+        NetworkService.shared.addTodos(todo: newTodo) { (todos) in
+            self.todoItem.text = ""
+            self.todos = todos.items
+            self.todoTable.reloadData()
+        } _: { (errMsg) in
+            debugPrint(errMsg)
+        }
     }
 }
 
