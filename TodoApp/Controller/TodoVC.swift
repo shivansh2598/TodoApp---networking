@@ -19,6 +19,14 @@ class TodoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         todoTable.dataSource = self
         
         getTodo()
+        
+        NetworkService.shared.addTodos(todo: Todo(item: "Test", priority: 2)) { (todos) in
+            self.todos = todos.items
+            self.todoTable.reloadData()
+        } _: { (errMsg) in
+            debugPrint(errMsg)
+        }
+
     }
     
     func getTodo()
@@ -26,7 +34,10 @@ class TodoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         NetworkService.shared.getTodos { (todos) in
             self.todos = todos.items
             self.todoTable.reloadData()
+        } _: { (errMsg) in
+            debugPrint(errMsg)
         }
+
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
