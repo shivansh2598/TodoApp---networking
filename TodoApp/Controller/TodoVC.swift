@@ -7,13 +7,43 @@
 
 import UIKit
 
-class TodoVC: UIViewController {
-
+class TodoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    @IBOutlet weak var todoTable : UITableView!
+    var todos : [Todo] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        NetworkService.shared.getTodos()
+        
+        todoTable.delegate = self
+        todoTable.dataSource = self
+        
+        getTodo()
     }
-
-
+    
+    func getTodo()
+    {
+        NetworkService.shared.getTodos { (todos) in
+            self.todos = todos.items
+            self.todoTable.reloadData()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return todos.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "todoItem") as? TodoCell {
+            cell.updateCell(todo: todos[indexPath.row])
+            return cell
+        }
+        
+        return UITableViewCell()
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
 }
 

@@ -14,35 +14,35 @@ class NetworkService {
     let URL_ADD = "/Add"
     let session = URLSession(configuration: .default)
     
-    func getTodos(){
+    func getTodos(_ onSuccess : @escaping (Todos) -> ()){
         let url = URL(string: "\(URL_BASE)")!
-        let task = session.dataTask(with: url) { (data, response, error) in
+        let task = session.dataTask(with: url) {(data, response, error) in
             
-            //handling connection based error
-            if let error = error {
-                debugPrint(error.localizedDescription)
-                return
-            }
-            
-            //handling invalid data & response error
-            guard let data = data ,let response = response as? HTTPURLResponse else {
-                debugPrint("Invalid data or response")
-                return
-            }
-            
-            do{
-                //handling data and api errors
-                if response.statusCode == 200 {
-                    let items = try JSONDecoder().decode(Todos.self, from: data)
-                    print(items)
-                } else {
-                    let err = try JSONDecoder().decode(APIError.self, from: data)
+            DispatchQueue.main.async {
+                //handling connection based error
+                if let error = error {
+                    debugPrint(error.localizedDescription)
+                    return
                 }
-            } catch {
-                debugPrint(error.localizedDescription)
+                
+                //handling invalid data & response error
+                guard let data = data ,let response = response as? HTTPURLResponse else {
+                    debugPrint("Invalid data or response")
+                    return
+                }
+                
+                do{
+                    //handling data and api errors
+                    if response.statusCode == 200 {
+                        let items = try JSONDecoder().decode(Todos.self, from: data)
+                        onSuccess(items)
+                    } else {
+                        let err = try JSONDecoder().decode(APIError.self, from: data)
+                    }
+                } catch {
+                    debugPrint(error.localizedDescription)
+                }
             }
-            
-            
         }
         task.resume()
     }
