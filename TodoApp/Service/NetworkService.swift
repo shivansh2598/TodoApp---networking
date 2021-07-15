@@ -25,17 +25,24 @@ class NetworkService {
             }
             
             //handling invalid data & response error
-            guard let _ = data ,let response = response as? HTTPURLResponse else {
+            guard let data = data ,let response = response as? HTTPURLResponse else {
                 debugPrint("Invalid data or response")
                 return
             }
             
-            //handling data and api errors
-            if response.statusCode == 200 {
-                
-            } else {
-                
+            do{
+                //handling data and api errors
+                if response.statusCode == 200 {
+                    let items = try JSONDecoder().decode(Todos.self, from: data)
+                    print(items)
+                } else {
+                    let err = try JSONDecoder().decode(APIError.self, from: data)
+                }
+            } catch {
+                debugPrint(error.localizedDescription)
             }
+            
+            
         }
         task.resume()
     }
